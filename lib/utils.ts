@@ -11,22 +11,38 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+
+
+
 // ERROR HANDLER
+// // lib/utils.ts
+export function sanitizePassword(password: string): string {
+  // Escape special characters
+  return password.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
+// Improved error handling function
 export const handleError = (error: unknown) => {
   if (error instanceof Error) {
-    // This is a native JavaScript error (e.g., TypeError, RangeError)
-    console.error(error.message);
-    throw new Error(`Error: ${error.message}`);
+    // Check if the error message already has the prefix "Error: "
+    const errorMessage = error.message.startsWith("Error: ") ? error.message : `Error: ${error.message}`;
+    console.error(errorMessage);
+    throw new Error(errorMessage); // Throw the error message with the appropriate prefix
   } else if (typeof error === "string") {
-    // This is a string error message
-    console.error(error);
-    throw new Error(`Error: ${error}`);
+    // Check if the error message already has the prefix "Error: "
+    const errorMessage = error.startsWith("Error: ") ? error : `Error: ${error}`;
+    console.error(errorMessage);
+    throw new Error(errorMessage); // Throw the error message with the appropriate prefix
   } else {
-    // This is an unknown type of error
+    // For other types of errors (e.g., objects), stringify them
     console.error(error);
     throw new Error(`Unknown error: ${JSON.stringify(error)}`);
   }
 };
+
+
+
+
 
 // PLACEHOLDER LOADER - while image is transforming
 const shimmer = (w: number, h: number) => `
